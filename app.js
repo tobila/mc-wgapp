@@ -36,7 +36,7 @@ if(process.env.VCAP_SERVICES){
 	var appEnv = cfenv.getAppEnv();
 
 	server.connection({
-	    host: appEnv.url,
+	    // host: appEnv.url,
 	    port: appEnv.port
 	});
 
@@ -58,7 +58,6 @@ if(process.env.VCAP_SERVICES){
 	// running locally
 
 	server.connection({
-	    host: 'localhost',
 	    port: 8000
 	});
 
