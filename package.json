@@ -1,16 +1,21 @@
 {
 	"name": "HelloWorldNodeApp",
 	"version": "0.0.1",
-    "private": true,
+	"private": true,
 	"scripts": {
 		"start": "node app.js"
 	},
 	"dependencies": {
-		"express": "4.13.x",
-		"cfenv": "1.0.x"
+		"cfenv": "^1.0.4",
+		"express": "^4.13.4",
+		"hapi": "^16.4.2",
+		"inert": "^4.2.0",
+		"lout": "^10.0.1",
+		"mysql": "^2.13.0",
+		"vision": "^4.1.1"
 	},
 	"repository": {},
 	"engines": {
 		"node": "4.2.x"
-	} 
+	}
 }
