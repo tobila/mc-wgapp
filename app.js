@@ -17,6 +17,7 @@ const MySQL = require('mysql');
 
 const server = new Hapi.Server();
 
+// console.log(process.argv[2]);
 
 var db_config = {
 	connectionLimit: 10,
@@ -34,34 +35,15 @@ if(process.env.VCAP_SERVICES){
 
 	// get the app environment from Cloud Foundry
 	var appEnv = cfenv.getAppEnv();
-
 	server.connection({
-	    // host: appEnv.url,
 	    port: appEnv.port
 	});
 
-	// create a new express server
-	// var app = express();
-	//
-	// // serve the files out of ./public as our main files
-	// app.use(express.static(__dirname + '/public'));
-	//
-
-	//
-	// // start server on the specified port and binding host
-	// app.listen(appEnv.port, '0.0.0.0', function() {
-	//
-	// 	// print a message when the server starts listening
-	//   console.log("server starting on " + appEnv.url);
-	// });
 }else{
 	// running locally
-
 	server.connection({
 	    port: 8000
 	});
-
-
 }
 
 server.register([require('vision'), require('inert'), { register: require('lout') }], function(err) { });
@@ -80,9 +62,38 @@ server.route({
 	path: '/users',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM user',
-			function(error, result, fields){
+			conn.query('SELECT * FROM users', function(error, result, fields){
 				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'GET',
+	path: '/user/{userID}',
+	handler: function(request, reply){
+		var userID = encodeURIComponent(request.params.userID);
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT * FROM users WHERE username='"+userID+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'POST',
+	path: '/user',
+	handler: function(request, reply){
+		var username = request.payload.username;
+		var password = request.payload.password;
+		pool.getConnection(function(err, conn){
+			conn.query("INSERT INTO users (username, password) VALUES ('"+username+"', '"+password+"')", function(error, result, fields){
+				if(error) throw error;
+				// reply(name+" "+password);
 				reply(result);
 				conn.release();
 			});
@@ -90,58 +101,54 @@ server.route({
 	}
 });
 
-server.route({
-	method: 'GET',
-	path: '/article',
-	handler: function(request, reply){
-		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM article',
-			function(error, result, fields){
-				if(error) throw error;
-				reply(result);
-				conn.release();
-			});
-		});
-	}
-});
+// server.route({
+// 	method: 'GET',
+// 	path: '/article',
+// 	handler: function(request, reply){
+// 		pool.getConnection(function(err, conn){
+// 			conn.query('SELECT * FROM article', function(error, result, fields){
+// 				if(error) throw error;
+// 				reply(result);
+// 				conn.release();
+// 			});
+// 		});
+// 	}
+// });
 
-server.route({
-	method: 'GET',
-	path: '/articleInShoppinglist',
-	handler: function(request, reply){
-		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM articleInShoppinglist',
-			function(error, result, fields){
-				if(error) throw error;
-				reply(result);
-				conn.release();
-			});
-		});
-	}
-});
+// server.route({
+// 	method: 'GET',
+// 	path: '/articleInShoppinglist',
+// 	handler: function(request, reply){
+// 		pool.getConnection(function(err, conn){
+// 			conn.query('SELECT * FROM articleInShoppinglist', function(error, result, fields){
+// 				if(error) throw error;
+// 				reply(result);
+// 				conn.release();
+// 			});
+// 		});
+// 	}
+// });
 
-server.route({
-	method: 'GET',
-	path: '/category',
-	handler: function(request, reply){
-		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM category',
-			function(error, result, fields){
-				if(error) throw error;
-				reply(result);
-				conn.release();
-			});
-		});
-	}
-});
+// server.route({
+// 	method: 'GET',
+// 	path: '/category',
+// 	handler: function(request, reply){
+// 		pool.getConnection(function(err, conn){
+// 			conn.query('SELECT * FROM category', function(error, result, fields){
+// 				if(error) throw error;
+// 				reply(result);
+// 				conn.release();
+// 			});
+// 		});
+// 	}
+// });
 
 server.route({
 	method: 'GET',
 	path: '/investment',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM investment',
-			function(error, result, fields){
+			conn.query('SELECT * FROM investment', function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
@@ -155,8 +162,7 @@ server.route({
 	path: '/pantry',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM pantry',
-			function(error, result, fields){
+			conn.query('SELECT * FROM pantry', function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
@@ -170,8 +176,7 @@ server.route({
 	path: '/shoppinglist',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
-			conn.query('SELECT * FROM shoppinglist',
-			function(error, result, fields){
+			conn.query('SELECT * FROM shoppinglist', function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
