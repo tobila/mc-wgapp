@@ -11,9 +11,11 @@
 // cfenv provides access to your Cloud Foundry environment
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
+var passwordHash = require('password-hash');
 
 const Hapi = require('hapi');
 const MySQL = require('mysql');
+
 
 const server = new Hapi.Server();
 
@@ -62,6 +64,7 @@ server.route({
 	path: '/users',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
+			if (err) throw err;
 			conn.query('SELECT * FROM users', function(error, result, fields){
 				if(error) throw error;
 				reply(result);
@@ -86,14 +89,14 @@ server.route({
 });
 server.route({
 	method: 'PUT',
-	path: '/user',
+	path: '/addUser',
 	handler: function(request, reply){
 		var username = request.payload.username;
 		var password = request.payload.password;
+		var hashedPassword = passwordHash.generate(password);
 		pool.getConnection(function(err, conn){
-			conn.query("INSERT INTO users (username, password) VALUES ('"+username+"', '"+password+"')", function(error, result, fields){
+			conn.query("INSERT INTO users (username, password) VALUES ('"+username+"', '"+hashedPassword+"')", function(error, result, fields){
 				if(error) throw error;
-				// reply(name+" "+password);
 				reply(result);
 				conn.release();
 			});
@@ -114,6 +117,28 @@ server.route({
 		});
 	}
 });
+server.route({
+	method: 'POST',
+	path: '/verifyUser',
+	handler: function(request, reply){
+		var username = request.payload.username;
+		var password = request.payload.password;
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT password FROM users WHERE username='"+username+"'", function(error, result, fields){
+				if(error) throw error;
+
+				if(passwordHash.verify(password, result[0].password)){
+					reply("true");
+				}else{
+					// reply("false "+JSON.stringify(result));
+					reply("false");
+				}
+				conn.release();
+			});
+		});
+	}
+});
+
 
 
 
