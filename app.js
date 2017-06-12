@@ -72,11 +72,11 @@ server.route({
 });
 server.route({
 	method: 'GET',
-	path: '/user/{userID}',
+	path: '/user/{username}',
 	handler: function(request, reply){
-		var userID = encodeURIComponent(request.params.userID);
+		var username = encodeURIComponent(request.params.username);
 		pool.getConnection(function(err, conn){
-			conn.query("SELECT * FROM users WHERE username='"+userID+"'", function(error, result, fields){
+			conn.query("SELECT * FROM users WHERE username='"+username+"'", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
@@ -85,7 +85,7 @@ server.route({
 	}
 });
 server.route({
-	method: 'POST',
+	method: 'PUT',
 	path: '/user',
 	handler: function(request, reply){
 		var username = request.payload.username;
@@ -100,52 +100,26 @@ server.route({
 		});
 	}
 });
+server.route({
+	method: 'DELETE',
+	path: '/deleteUser/{username}',
+	handler: function(request, reply){
+		var username = request.payload.username;
+		pool.getConnection(function(err, conn){
+			conn.query("DELETE FROM users WHERE username='"+username+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
 
-// server.route({
-// 	method: 'GET',
-// 	path: '/article',
-// 	handler: function(request, reply){
-// 		pool.getConnection(function(err, conn){
-// 			conn.query('SELECT * FROM article', function(error, result, fields){
-// 				if(error) throw error;
-// 				reply(result);
-// 				conn.release();
-// 			});
-// 		});
-// 	}
-// });
 
-// server.route({
-// 	method: 'GET',
-// 	path: '/articleInShoppinglist',
-// 	handler: function(request, reply){
-// 		pool.getConnection(function(err, conn){
-// 			conn.query('SELECT * FROM articleInShoppinglist', function(error, result, fields){
-// 				if(error) throw error;
-// 				reply(result);
-// 				conn.release();
-// 			});
-// 		});
-// 	}
-// });
-
-// server.route({
-// 	method: 'GET',
-// 	path: '/category',
-// 	handler: function(request, reply){
-// 		pool.getConnection(function(err, conn){
-// 			conn.query('SELECT * FROM category', function(error, result, fields){
-// 				if(error) throw error;
-// 				reply(result);
-// 				conn.release();
-// 			});
-// 		});
-// 	}
-// });
 
 server.route({
 	method: 'GET',
-	path: '/investment',
+	path: '/investments',
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
 			conn.query('SELECT * FROM investment', function(error, result, fields){
@@ -156,6 +130,53 @@ server.route({
 		});
 	}
 });
+server.route({
+	method: 'GET',
+	path: '/investment/{id}',
+	handler: function(request, reply){
+		var id = encodeURIComponent(request.params.id);
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT * FROM investment WHERE id='"+id+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'PUT',
+	path: '/addInvestment',
+	handler: function(request, reply){
+		var reason = request.payload.reason;
+		var amount = request.payload.amount;
+		var username = request.payload.username;
+		pool.getConnection(function(err, conn){
+			conn.query("INSERT INTO investment (reason, amount, user) VALUES ('"reason"', '"+amount+"', '"+username+"')", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'DELETE',
+	path: '/deleteInvestment/{id}',
+	handler: function(request, reply){
+		var id = request.payload.id;
+		pool.getConnection(function(err, conn){
+			conn.query("DELETE FROM investment WHERE id='"+id+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+
+
+
 
 server.route({
 	method: 'GET',
@@ -170,6 +191,52 @@ server.route({
 		});
 	}
 });
+server.route({
+	method: 'GET',
+	path: '/pantry/{articleName}',
+	handler: function(request, reply){
+		var articleName = encodeURIComponent(request.params.articleName);
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT * FROM pantry WHERE articleName='"+articleName+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'PUT',
+	path: '/addArticleToPantry',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		var quantity = request.payload.quantity;
+		var type = request.payload.type;
+		var minQuantity = request.payload.minQuantity;
+		var category = request.payload.category;
+		pool.getConnection(function(err, conn){
+			conn.query("INSERT INTO pantry (articleName, quantity, type, minQuantity, category) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"', '"+minQuantity+"', '"+category+"')", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'DELETE',
+	path: '/deleteArticleFromPantry/{articleName}',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		pool.getConnection(function(err, conn){
+			conn.query("DELETE FROM pantry WHERE articleName='"+articleName+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
 
 server.route({
 	method: 'GET',
@@ -177,6 +244,50 @@ server.route({
 	handler: function(request, reply){
 		pool.getConnection(function(err, conn){
 			conn.query('SELECT * FROM shoppinglist', function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'GET',
+	path: '/shoppinglist/{articleName}',
+	handler: function(request, reply){
+		var articleName = encodeURIComponent(request.params.articleName);
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT * FROM shoppinglist WHERE articleName='"+articleName+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'PUT',
+	path: '/addArticleToShoppinglist',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		var quantity = request.payload.quantity;
+		var type = request.payload.type;
+		pool.getConnection(function(err, conn){
+			conn.query("INSERT INTO pantry (articleName, quantity, type) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"')", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'DELETE',
+	path: '/deleteArticleFromShoppinglist/{articleName}',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		pool.getConnection(function(err, conn){
+			conn.query("DELETE FROM shoppinglist WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
