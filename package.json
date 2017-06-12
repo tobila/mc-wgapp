@@ -12,6 +12,7 @@
 		"inert": "^4.2.0",
 		"lout": "^10.0.1",
 		"mysql": "^2.13.0",
+		"password-hash": "^1.2.2",
 		"vision": "^4.1.1"
 	},
 	"repository": {},
