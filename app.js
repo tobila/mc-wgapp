@@ -152,7 +152,7 @@ server.route({
 		var amount = request.payload.amount;
 		var username = request.payload.username;
 		pool.getConnection(function(err, conn){
-			conn.query("INSERT INTO investment (reason, amount, user) VALUES ('"reason"', '"+amount+"', '"+username+"')", function(error, result, fields){
+			conn.query("INSERT INTO investment (reason, amount, user) VALUES ('"+reason+"', '"+amount+"', '"+username+"')", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
