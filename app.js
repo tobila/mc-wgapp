@@ -203,7 +203,6 @@ server.route({
 	method: 'GET',
 	path: '/investmentsForUsers',
 	handler: function(request, reply){
-		var id = request.payload.id;
 		pool.getConnection(function(err, conn){
 			conn.query("SELECT user, sum(amount) FROM investment group by user", function(error, result, fields){
 				if(error) throw error;
@@ -268,6 +267,21 @@ server.route({
 		var articleName = request.payload.articleName;
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM pantry WHERE articleName='"+articleName+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
+	method: 'POST',
+	path: '/changeQuantityInPantry',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		var quantity = request.payload.quantity;
+		pool.getConnection(function(err, conn){
+			conn.query("UPDATE pantry SET quantity="+quantity+" WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
