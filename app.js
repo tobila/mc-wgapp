@@ -205,7 +205,7 @@ server.route({
 	handler: function(request, reply){
 		var id = request.payload.id;
 		pool.getConnection(function(err, conn){
-			conn.query("SELECT user, sum(amount) FROM `investment` group by user", function(error, result, fields){
+			conn.query("SELECT user, sum(amount) FROM investment group by user", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
