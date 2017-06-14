@@ -97,7 +97,7 @@ server.route({
 		pool.getConnection(function(err, conn){
 			conn.query("INSERT INTO users (username, password) VALUES ('"+username+"', '"+hashedPassword+"')", function(error, result, fields){
 				if(error) throw error;
-				reply(result);
+				else reply("true");
 				conn.release();
 			});
 		});
@@ -199,7 +199,20 @@ server.route({
 		});
 	}
 });
-
+server.route({
+	method: 'GET',
+	path: '/investmentsForUsers',
+	handler: function(request, reply){
+		var id = request.payload.id;
+		pool.getConnection(function(err, conn){
+			conn.query("SELECT user, sum(amount) FROM `investment` group by user", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
 
 
 
