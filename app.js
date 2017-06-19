@@ -107,7 +107,7 @@ server.route({
 	method: 'DELETE',
 	path: '/deleteUser/{username}',
 	handler: function(request, reply){
-		var username = request.payload.username;
+		var username = username;
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM users WHERE username='"+username+"'", function(error, result, fields){
 				if(error) throw error;
@@ -189,7 +189,7 @@ server.route({
 	method: 'DELETE',
 	path: '/deleteInvestment/{id}',
 	handler: function(request, reply){
-		var id = request.payload.id;
+		var id = encodeURIComponent(request.params.id);
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM investment WHERE id='"+id+"'", function(error, result, fields){
 				if(error) throw error;
@@ -264,7 +264,7 @@ server.route({
 	method: 'DELETE',
 	path: '/deleteArticleFromPantry/{articleName}',
 	handler: function(request, reply){
-		var articleName = request.payload.articleName;
+		var articleName = encodeURIComponent(request.params.articleName);
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM pantry WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
@@ -337,7 +337,7 @@ server.route({
 	method: 'DELETE',
 	path: '/deleteArticleFromShoppinglist/{articleName}',
 	handler: function(request, reply){
-		var articleName = request.payload.articleName;
+		var articleName = encodeURIComponent(request.params.articleName);
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM shoppinglist WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
