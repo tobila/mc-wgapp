@@ -325,7 +325,7 @@ server.route({
 		var quantity = request.payload.quantity;
 		var type = request.payload.type;
 		pool.getConnection(function(err, conn){
-			conn.query("INSERT INTO pantry (articleName, quantity, type) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"')", function(error, result, fields){
+			conn.query("INSERT INTO shoppinglist (articleName, quantity, type) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"')", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
