@@ -347,3 +347,18 @@ server.route({
 		});
 	}
 });
+server.route({
+	method: 'POST',
+	path: '/changeQuantityInShoppinglist',
+	handler: function(request, reply){
+		var articleName = request.payload.articleName;
+		var quantity = request.payload.quantity;
+		pool.getConnection(function(err, conn){
+			conn.query("UPDATE shoppinglist SET quantity="+quantity+" WHERE articleName='"+articleName+"'", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
