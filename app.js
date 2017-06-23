@@ -200,6 +200,19 @@ server.route({
 	}
 });
 server.route({
+	method: 'DELETE',
+	path: '/clearInvestments',
+	handler: function(request, reply){
+		pool.getConnection(function(err, conn){
+			conn.query("DELETE FROM investment", function(error, result, fields){
+				if(error) throw error;
+				reply(result);
+				conn.release();
+			});
+		});
+	}
+});
+server.route({
 	method: 'GET',
 	path: '/investmentsForUsers',
 	handler: function(request, reply){
