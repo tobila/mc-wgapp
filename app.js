@@ -348,9 +348,10 @@ server.route({
 });
 server.route({
 	method: 'DELETE',
-	path: '/deleteArticleFromShoppinglist/{articleName}',
+	path: '/deleteArticleFromShoppinglist',
 	handler: function(request, reply){
-		var articleName = encodeURIComponent(request.params.articleName);
+		var articleName = request.payload.articleName;
+		// console.log(articleName);
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM shoppinglist WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
