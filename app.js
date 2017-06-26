@@ -337,8 +337,9 @@ server.route({
 		var articleName = request.payload.articleName;
 		var quantity = request.payload.quantity;
 		var type = request.payload.type;
+		var category = request.payload.category;
 		pool.getConnection(function(err, conn){
-			conn.query("INSERT INTO shoppinglist (articleName, quantity, type) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"')", function(error, result, fields){
+			conn.query("INSERT INTO shoppinglist (articleName, quantity, type, category) VALUES ('"+articleName+"', '"+quantity+"', '"+type+"', '"+category+"')", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
