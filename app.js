@@ -275,9 +275,9 @@ server.route({
 });
 server.route({
 	method: 'DELETE',
-	path: '/deleteArticleFromPantry/{articleName}',
+	path: '/deleteArticleFromPantry',
 	handler: function(request, reply){
-		var articleName = encodeURIComponent(request.params.articleName);
+		var articleName = request.payload.articleName;
 		pool.getConnection(function(err, conn){
 			conn.query("DELETE FROM pantry WHERE articleName='"+articleName+"'", function(error, result, fields){
 				if(error) throw error;
