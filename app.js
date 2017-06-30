@@ -233,7 +233,7 @@ server.route({
 		var userPayed = request.payload.userPayed;
 		var userReceived = request.payload.userReceived;
 		pool.getConnection(function(err, conn){
-			conn.query("INSERT INTO 'investment'('reason', 'amount', 'user') VALUES ('received Payment', '"+amount+"', '"+userPayed+"'),('received Payment', '-"+amount+"', '"+userReceived+"')", function(error, result, fields){
+			conn.query("INSERT INTO investment (reason, amount, user) VALUES ('received Payment', '"+amount+"', '"+userPayed+"'),('received Payment', '-"+amount+"', '"+userReceived+"')", function(error, result, fields){
 				if(error) throw error;
 				reply(result);
 				conn.release();
